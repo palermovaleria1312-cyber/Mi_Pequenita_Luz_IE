@@ -1,6 +1,5 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Loader robusto para imágenes (por si quedaron en raíz o en carpetas con mayúsculas)
 const FALLBACK_DIRS = ["assets", "ASSETS", "activos", "ACTIVOS", ".", ""];
 
 function tryLoad(path) {
@@ -33,11 +32,9 @@ async function resolveSrc(filePath){
   }
 })();
 
-// Form -> WhatsApp
 const form = document.getElementById("leadForm");
 form?.addEventListener("submit", (e) => {
   e.preventDefault();
-
   const data = new FormData(form);
   const nombre = (data.get("nombre") || "").toString().trim();
   const telefono = (data.get("telefono") || "").toString().trim();
