@@ -1,26 +1,9 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Menú móvil
-const menuBtn = document.getElementById("menuBtn");
-const mobileNav = document.getElementById("mobileNav");
+// Loader robusto para imágenes (por si quedaron en raíz o en carpetas con mayúsculas)
+const FALLBACK_DIRS = ["assets", "ASSETS", "activos", "ACTIVOS", ".", ""];
 
-menuBtn?.addEventListener("click", () => {
-  const isOpen = menuBtn.getAttribute("aria-expanded") === "true";
-  menuBtn.setAttribute("aria-expanded", String(!isOpen));
-  mobileNav.hidden = isOpen;
-});
-mobileNav?.querySelectorAll("a").forEach(a => {
-  a.addEventListener("click", () => {
-    mobileNav.hidden = true;
-    menuBtn.setAttribute("aria-expanded", "false");
-  });
-});
-
-// Fix de imágenes (GitHub Pages es sensible a MAYÚSCULAS/MINÚSCULAS).
-// Carga normal desde assets/; si falla, prueba con ASSETS/ o ACTIVOS/ como respaldo.
-const FALLBACK_DIRS = ["assets", "ASSETS", "activos", "ACTIVOS"];
-
-function tryLoad(img, path) {
+function tryLoad(path) {
   return new Promise((resolve, reject) => {
     const t = new Image();
     t.onload = () => resolve(path);
@@ -30,16 +13,15 @@ function tryLoad(img, path) {
 }
 
 async function resolveSrc(filePath){
-  // filePath viene como "assets/archivo.png"
   const file = filePath.split("/").pop();
   for (const dir of FALLBACK_DIRS){
-    const candidate = `${dir}/${file}`;
+    const candidate = dir ? `${dir}/${file}` : file;
     try{
-      const ok = await tryLoad(null, candidate);
+      const ok = await tryLoad(candidate);
       return ok;
     }catch(e){}
   }
-  return filePath; // último intento
+  return filePath;
 }
 
 (async () => {
@@ -51,7 +33,7 @@ async function resolveSrc(filePath){
   }
 })();
 
-// Form -> abre WhatsApp con mensaje listo
+// Form -> WhatsApp
 const form = document.getElementById("leadForm");
 form?.addEventListener("submit", (e) => {
   e.preventDefault();
